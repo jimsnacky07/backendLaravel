@@ -31,4 +31,26 @@ class DashboardController extends Controller
         }
         return view('dashboard', compact('kamar', 'penghuni', 'tagihan', 'admin', 'penghuni_terbaru', 'bulan', 'total_tagihan'));
     }
+
+    public function laporan()
+    {
+        $totalKamar = Kamar::count();
+        $totalPenghuni = Penghuni::count();
+        $totalTagihan = Tagihan::count();
+        $totalAdmin = Admin::count();
+        $penghuniTerbaru = Penghuni::orderBy('registrasi', 'desc')->take(5)->get();
+        $grafikTagihan = Tagihan::selectRaw('YEAR(tanggal) as tahun, MONTH(tanggal) as bulan, COUNT(*) as jumlah')
+            ->whereYear('tanggal', date('Y'))
+            ->groupBy(DB::raw('YEAR(tanggal)'), DB::raw('MONTH(tanggal)'))
+            ->orderBy('bulan')
+            ->get();
+        return view('laporan.index', compact(
+            'totalKamar',
+            'totalPenghuni',
+            'totalTagihan',
+            'totalAdmin',
+            'penghuniTerbaru',
+            'grafikTagihan'
+        ));
+    }
 }
