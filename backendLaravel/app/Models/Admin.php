@@ -2,10 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Admin extends Model
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
+
+class Admin extends Authenticatable
 {
+    use HasApiTokens;
+
     protected $table = 'admin';
     protected $primaryKey = 'id';
     public $incrementing = false;
@@ -15,5 +20,9 @@ class Admin extends Model
         'username',
         'password',
         'adminlevel'
+    ];
+
+    protected $hidden = [
+        'password',
     ];
 }

@@ -7,6 +7,11 @@ use App\Http\Controllers\Api\KamarController;
 use App\Http\Controllers\Api\KeuanganController;
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\TagihanController;
+use App\Http\Controllers\Api\AuthController;
+// Auth routes
+Route::post('/admin/register', [AuthController::class, 'register']);
+Route::post('/admin/login', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->get('/admin/dashboard', [AuthController::class, 'dashboard']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();

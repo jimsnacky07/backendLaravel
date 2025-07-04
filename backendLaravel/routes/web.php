@@ -8,12 +8,12 @@ use App\Http\Controllers\PenghuniController;
 use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\RegisterController;
+// Register routes
+Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [RegisterController::class, 'register'])->name('register.process');
 
-Route::get('/', [DashboardController::class, 'index']);
-
-// Dashboard
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
+Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 // Endpoint login admin
 Route::post('admin/login', [AdminController::class, 'login']);
 // Admin CRUD (web)
@@ -31,6 +31,10 @@ Route::resource('tagihan', TagihanController::class);
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login'])->name('login.process');
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/', function () {
+    return view('welcome');
+});
 
 // Laporan
 Route::get('/laporan', [DashboardController::class, 'laporan'])->name('laporan');

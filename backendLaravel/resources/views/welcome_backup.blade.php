@@ -1,10 +1,13 @@
+// ...redirect logic removed. Use middleware or controller for access control...
 <!DOCTYPE html>
 <html lang="en">
 @include('partials.header')
 <body>
   <div class="container-scroller">
     @include('partials.navbar')
+    <!-- partial -->
     <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_settings-panel.html -->
       <div class="theme-setting-wrapper">
         <div id="settings-trigger"><i class="ti-settings"></i></div>
         <div id="theme-settings" class="settings-panel">
@@ -48,8 +51,6 @@
                 <li>
                   <div class="form-check">
                     <label class="form-check-label">
-                      <input class="checkbox" type="checkbox">
-                      Team review meeting at 3.00 PM
                     </label>
                   </div>
                   <i class="remove ti-close"></i>
@@ -57,8 +58,6 @@
                 <li>
                   <div class="form-check">
                     <label class="form-check-label">
-                      <input class="checkbox" type="checkbox">
-                      Prepare for presentation
                     </label>
                   </div>
                   <i class="remove ti-close"></i>
@@ -66,27 +65,17 @@
                 <li>
                   <div class="form-check">
                     <label class="form-check-label">
-                      <input class="checkbox" type="checkbox">
-                      Resolve all the low priority tickets due today
                     </label>
                   </div>
                   <i class="remove ti-close"></i>
                 </li>
                 <li class="completed">
                   <div class="form-check">
-                    <label class="form-check-label">
-                      <input class="checkbox" type="checkbox" checked>
-                      Schedule meeting for next week
-                    </label>
                   </div>
                   <i class="remove ti-close"></i>
                 </li>
                 <li class="completed">
                   <div class="form-check">
-                    <label class="form-check-label">
-                      <input class="checkbox" type="checkbox" checked>
-                      Project review
-                    </label>
                   </div>
                   <i class="remove ti-close"></i>
                 </li>
@@ -129,7 +118,6 @@
                 <div class="profile"><img src="{{ asset('assets/images/faces/face2.jpg') }}" alt="image"><span class="offline"></span></div>
                 <div class="info">
                   <div class="wrapper d-flex">
-                    <p>Catherine</p>
                   </div>
                   <p>Away</p>
                 </div>
@@ -173,16 +161,20 @@
           <!-- chat tab ends -->
         </div>
       </div>
+      <!-- partial -->
+      <!-- partial:partials/_sidebar.html -->
       @include('partials.sidebar')
+      <!-- partial -->
       <div class="main-panel">
-        <div class="content-wrapper" style="min-height: 80vh;">
+        <div class="content-wrapper d-flex justify-content-center align-items-center" style="min-height: 80vh;">
           <div class="w-100">
-            @yield('content')
+            @include('dashboard')
           </div>
         </div>
       </div>
-    </div>
+    </div>   
+    <!-- page-body-wrapper ends -->
   </div>
+  <!-- container-scroller -->
+
   @include('partials.footer')
-</body>
-</html>
