@@ -1,7 +1,7 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar" style="width:220px;">
   <ul class="nav">
     <li class="nav-item">
-      <a class="nav-link" href="/">
+      <a class="nav-link" href="/dashboard">
         <i class="icon-grid menu-icon"></i>
         <span class="menu-title">Dashboard</span>
       </a>
