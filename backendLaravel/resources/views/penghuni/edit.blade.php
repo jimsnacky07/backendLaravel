@@ -2,33 +2,43 @@
 
 @section('content')
 <div class="container">
-    <h3>Edit Penghuni</h3>
+    <h2>Edit Penghuni</h2>
     <form action="{{ route('penghuni.update', $penghuni->id) }}" method="POST">
         @csrf
         @method('PUT')
         <div class="mb-3">
-            <label>ID</label>
+            <label for="id" class="form-label">ID Penghuni</label>
             <input type="text" name="id" class="form-control" value="{{ $penghuni->id }}" readonly>
         </div>
         <div class="mb-3">
-            <label>Nama</label>
-            <input type="text" name="nama" class="form-control" value="{{ $penghuni->nama }}" required>
+            <label for="nama" class="form-label">Nama</label>
+            <input type="text" name="nama" class="form-control" required value="{{ old('nama', $penghuni->nama) }}">
         </div>
         <div class="mb-3">
-            <label>Alamat</label>
-            <input type="text" name="alamat" class="form-control" value="{{ $penghuni->alamat }}" required>
+            <label for="alamat" class="form-label">Alamat</label>
+            <input type="text" name="alamat" class="form-control" required value="{{ old('alamat', $penghuni->alamat) }}">
         </div>
         <div class="mb-3">
-            <label>No HP</label>
-            <input type="text" name="nohp" class="form-control" value="{{ $penghuni->nohp }}" required>
+            <label for="nohp" class="form-label">No HP</label>
+            <input type="text" name="nohp" class="form-control" required value="{{ old('nohp', $penghuni->nohp) }}">
         </div>
         <div class="mb-3">
-            <label>Registrasi</label>
-            <input type="date" name="registrasi" class="form-control" value="{{ $penghuni->registrasi }}" required>
+            <label for="registrasi" class="form-label">Tanggal Registrasi</label>
+            <input type="date" name="registrasi" class="form-control" required value="{{ old('registrasi', $penghuni->registrasi) }}">
         </div>
         <div class="mb-3">
-            <label>Kamar</label>
-            <input type="text" name="kamar" class="form-control" value="{{ $penghuni->kamar }}" required>
+            <label for="kamar" class="form-label">Kamar</label>
+            <select name="kamar" class="form-control" required>
+                <option value="">-- Pilih Kamar --</option>
+                @foreach($kamars as $kamar)
+                <option value="{{ $kamar->id }}" {{ old('kamar', $penghuni->kamar) == $kamar->id ? 'selected' : '' }} {{ $kamar->canAcceptNewOccupant() || $penghuni->kamar == $kamar->id ? '' : 'disabled' }}>
+                    {{ $kamar->id }} ({{ $kamar->getOccupancyStatus() }})
+                </option>
+                @endforeach
+            </select>
+            @error('kamar')
+            <div class="text-danger">{{ $message }}</div>
+            @enderror
         </div>
         <button type="submit" class="btn btn-primary">Update</button>
         <a href="{{ route('penghuni.index') }}" class="btn btn-secondary">Batal</a>

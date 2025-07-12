@@ -10,10 +10,10 @@ return new class extends Migration
     {
         Schema::create('keuangan', function (Blueprint $table) {
             $table->char('id', 10)->primary();
-            $table->char('id_penghuni', 10)->nullable();
+            $table->char('id_penghuni', 30)->nullable();
             $table->date('tgl_bayar')->nullable();
             $table->double('bayar')->nullable();
-            $table->string('keterangan', 20)->nullable();
+            $table->text('keterangan')->nullable();
         });
     }
 

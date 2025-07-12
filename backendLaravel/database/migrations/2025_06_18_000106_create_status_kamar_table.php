@@ -6,22 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('pelanggans', function (Blueprint $table) {
+        Schema::create('status_kamar', function (Blueprint $table) {
             $table->id();
+            $table->char('kamar_id', 30);
+            $table->enum('status', ['Tersedia', 'Terisi', 'Maintenance', 'Reserved']);
+            $table->text('keterangan')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('pelanggans');
+        Schema::dropIfExists('status_kamar');
     }
 };

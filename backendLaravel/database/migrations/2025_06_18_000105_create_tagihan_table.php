@@ -16,7 +16,6 @@ return new class extends Migration
             $table->decimal('tagihan', 10, 2)->nullable();
             $table->enum('status', ['Lunas', 'Belum Lunas'])->nullable();
             $table->date('tanggal')->nullable();
-            $table->foreign('id_penghuni')->references('id')->on('penghuni');
         });
     }
 

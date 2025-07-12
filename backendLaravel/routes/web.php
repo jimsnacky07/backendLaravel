@@ -9,32 +9,22 @@ use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Auth\RegisterController;
-// Register routes
-Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('register', [RegisterController::class, 'register'])->name('register.process');
 
-Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-// Endpoint login admin
-Route::post('admin/login', [AdminController::class, 'login']);
-// Admin CRUD (web)
-Route::resource('admin', AdminController::class);
-// Kamar CRUD (web)
-Route::resource('kamar', KamarController::class);
-// Keuangan CRUD (web)
-Route::resource('keuangan', KeuanganController::class);
-// Penghuni CRUD (web)
-Route::resource('penghuni', PenghuniController::class);
-// Tagihan CRUD (web)
-Route::resource('tagihan', TagihanController::class);
-
-// Login routes
+// Login routes (tidak pakai middleware)
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login'])->name('login.process');
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Register routes (jika ingin tetap bisa register tanpa login)
+Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [RegisterController::class, 'register'])->name('register.process');
 
-// Laporan
+// Semua route lain WAJIB login
+Route::get('/', [DashboardController::class, 'index']);
+Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::resource('admin', AdminController::class);
+Route::resource('kamar', KamarController::class);
+Route::resource('keuangan', KeuanganController::class);
+Route::resource('penghuni', PenghuniController::class);
+Route::resource('tagihan', TagihanController::class);
 Route::get('/laporan', [DashboardController::class, 'laporan'])->name('laporan');

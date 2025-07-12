@@ -12,8 +12,9 @@ return new class extends Migration
             $table->char('id', 30)->primary();
             $table->integer('lantai')->nullable();
             $table->string('kapasitas', 30)->nullable();
-            $table->string('fasilitas', 30)->nullable();
+            $table->text('fasilitas')->nullable(); // Changed to text for longer descriptions
             $table->double('tarif')->nullable();
+            $table->integer('max_penghuni')->default(2);
         });
     }
 

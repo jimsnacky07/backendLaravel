@@ -17,6 +17,13 @@ class DashboardController extends Controller
         $tagihan = Tagihan::count();
         $admin = Admin::count();
         $penghuni_terbaru = Penghuni::orderBy('registrasi', 'desc')->take(5)->get();
+        // Statistik kamar penuh dan tersedia
+        $kamar_penuh = Kamar::all()->filter(function ($k) {
+            return $k->getCurrentOccupantsCount() >= $k->max_penghuni;
+        })->count();
+        $kamar_tersedia = Kamar::all()->filter(function ($k) {
+            return $k->getCurrentOccupantsCount() < $k->max_penghuni;
+        })->count();
         // Grafik: jumlah tagihan per bulan (12 bulan terakhir)
         $tagihan_per_bulan = Tagihan::selectRaw('YEAR(tanggal) as tahun, MONTH(tanggal) as bulan, COUNT(*) as total')
             ->whereYear('tanggal', date('Y'))
@@ -29,7 +36,7 @@ class DashboardController extends Controller
             $bulan[] = date('M', mktime(0, 0, 0, $row->bulan, 10));
             $total_tagihan[] = $row->total;
         }
-        return view('dashboard', compact('kamar', 'penghuni', 'tagihan', 'admin', 'penghuni_terbaru', 'bulan', 'total_tagihan'));
+        return view('dashboard', compact('kamar', 'penghuni', 'tagihan', 'admin', 'penghuni_terbaru', 'bulan', 'total_tagihan', 'kamar_penuh', 'kamar_tersedia'));
     }
 
     public function laporan()

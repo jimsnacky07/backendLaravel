@@ -10,37 +10,39 @@
         <input type="text" name="q" class="form-control me-2" placeholder="Cari keuangan..." value="{{ request('q') }}">
         <button class="btn btn-secondary" type="submit">Cari</button>
     </form>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>ID Penghuni</th>
-                <th>Tanggal Bayar</th>
-                <th>Bayar</th>
-                <th>Keterangan</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($keuangans as $keuangan)
-            <tr>
-                <td>{{ $keuangan->id }}</td>
-                <td>{{ $keuangan->id_penghuni }}</td>
-                <td>{{ $keuangan->tgl_bayar }}</td>
-                <td>{{ $keuangan->bayar }}</td>
-                <td>{{ $keuangan->keterangan }}</td>
-                <td>
-                    <a href="{{ route('keuangan.edit', $keuangan->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                    <form action="{{ route('keuangan.destroy', $keuangan->id) }}" method="POST" style="display:inline-block">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus?')">Hapus</button>
-                    </form>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-bordered table-sm align-middle" style="font-size: 0.95rem; min-width: 800px;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ID Penghuni</th>
+                    <th>Tanggal Bayar</th>
+                    <th>Bayar</th>
+                    <th>Keterangan</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($keuangans as $keuangan)
+                <tr>
+                    <td>{{ $keuangan->id }}</td>
+                    <td>{{ $keuangan->id_penghuni }}</td>
+                    <td>{{ $keuangan->tgl_bayar }}</td>
+                    <td>{{ $keuangan->bayar }}</td>
+                    <td style="max-width:120px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $keuangan->keterangan }}</td>
+                    <td>
+                        <a href="{{ route('keuangan.edit', $keuangan->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{{ route('keuangan.destroy', $keuangan->id) }}" method="POST" style="display:inline-block">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus?')">Hapus</button>
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
     {{ $keuangans->links() }}
 </div>
 @endsection

@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('admin', function (Blueprint $table) {
             $table->char('id', 20)->primary();
             $table->string('username', 30)->nullable();
-            $table->string('password', 30)->nullable();
+            $table->string('password', 255)->nullable(); // Increased for hashed passwords
             $table->integer('adminlevel')->nullable();
         });
     }
