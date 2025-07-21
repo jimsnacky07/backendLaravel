@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h2>Tambah Penghuni</h2>
-    <form action="{{ route('penghuni.store') }}" method="POST">
+    <form action="{{ route('penghuni.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label for="id" class="form-label">ID Penghuni</label>
@@ -28,6 +28,10 @@
         <div class="mb-3">
             <label for="tanggal_bayar" class="form-label">Tanggal Pembayaran</label>
             <input type="date" name="tanggal_bayar" class="form-control" required value="{{ old('tanggal_bayar') }}">
+        </div>
+        <div class="mb-3">
+            <label for="foto" class="form-label">Foto</label>
+            <input type="file" name="foto" class="form-control" accept="image/jpeg,image/png,image/jpg,image/svg+xml">
         </div>
         <div class="mb-3">
             <label for="kamar" class="form-label">Kamar</label>

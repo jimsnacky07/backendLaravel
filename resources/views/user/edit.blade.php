@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h1>Edit User</h1>
-    <form action="{{ route('user.update', $user->id) }}" method="POST">
+    <form action="{{ route('user.update', $user->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="mb-3">
@@ -17,6 +17,13 @@
         <div class="mb-3">
             <label for="password" class="form-label">Password (kosongkan jika tidak ingin mengubah)</label>
             <input type="password" name="password" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="foto" class="form-label">Foto</label>
+            <input type="file" name="foto" class="form-control" accept="image/jpeg,image/png,image/jpg,image/svg+xml">
+            @if($user->foto)
+            <img src="{{ asset('storage/' . $user->foto) }}" alt="Foto User" width="100" class="mt-2">
+            @endif
         </div>
         <div class="mb-3">
             <label for="penghuni_id" class="form-label">Relasi Penghuni (Opsional)</label>

@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h2>Tambah Kamar</h2>
-    <form action="{{ route('kamar.store') }}" method="POST">
+    <form action="{{ route('kamar.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label for="id" class="form-label">ID Kamar</label>
@@ -28,6 +28,10 @@
         <div class="mb-3">
             <label for="max_penghuni" class="form-label">Maksimal Penghuni</label>
             <input type="number" name="max_penghuni" class="form-control" required min="1" max="4" value="{{ old('max_penghuni', 2) }}">
+        </div>
+        <div class="mb-3">
+            <label for="foto" class="form-label">Foto</label>
+            <input type="file" name="foto" class="form-control" accept="image/jpeg,image/png,image/jpg,image/svg+xml">
         </div>
         <button type="submit" class="btn btn-primary">Simpan</button>
         <a href="{{ route('kamar.index') }}" class="btn btn-secondary">Batal</a>

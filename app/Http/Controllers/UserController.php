@@ -30,13 +30,20 @@ class UserController extends Controller
             'password' => 'required|string|min:6',
             'penghuni_id' => 'nullable|exists:penghuni,id',
             'tanggal_bayar' => 'nullable|date',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,svg',
             'role' => 'required|string',
         ]);
+
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('foto', 'public');
+            $validated['foto'] = $fotoPath;
+        }
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'foto' => $validated['foto'] ?? null,
             'role' => $validated['role'],
         ]);
 
@@ -76,12 +83,21 @@ class UserController extends Controller
             'password' => 'nullable|string|min:6',
             'penghuni_id' => 'nullable|exists:penghuni,id',
             'tanggal_bayar' => 'nullable|date',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,svg',
             'role' => 'required|string',
         ]);
-
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama jika ada
+            if ($user->foto) {
+                \Storage::disk('public')->delete($user->foto);
+            }
+            $fotoPath = $request->file('foto')->store('foto', 'public');
+            $validated['foto'] = $fotoPath;
+        }
         if (isset($validated['name'])) $user->name = $validated['name'];
         if (isset($validated['email'])) $user->email = $validated['email'];
         if (!empty($validated['password'])) $user->password = Hash::make($validated['password']);
+        if (isset($validated['foto'])) $user->foto = $validated['foto'];
         if (isset($validated['role'])) $user->role = $validated['role'];
         $user->save();
 

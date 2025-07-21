@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h2>Edit Kamar</h2>
-    <form action="{{ route('kamar.update', $kamar->id) }}" method="POST">
+    <form action="{{ route('kamar.update', $kamar->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="mb-3">
@@ -32,6 +32,13 @@
             @error('max_penghuni')
             <div class="text-danger">{{ $message }}</div>
             @enderror
+        </div>
+        <div class="mb-3">
+            <label for="foto" class="form-label">Foto</label>
+            <input type="file" name="foto" class="form-control" accept="image/jpeg,image/png,image/jpg,image/svg+xml">
+            @if($kamar->foto)
+            <img src="{{ asset('storage/' . $kamar->foto) }}" alt="Foto Kamar" width="100" class="mt-2">
+            @endif
         </div>
         <button type="submit" class="btn btn-primary">Update</button>
         <a href="{{ route('kamar.index') }}" class="btn btn-secondary">Batal</a>

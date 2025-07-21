@@ -20,6 +20,7 @@ class Penghuni extends Model
         'tanggal_bayar',
         'kamar',
         'user_id',
+        'foto',
     ];
 
     // Relationships

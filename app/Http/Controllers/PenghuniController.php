@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Penghuni;
 use App\Models\Kamar;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PenghuniController extends Controller
 {
@@ -53,7 +54,12 @@ class PenghuniController extends Controller
             'registrasi' => 'required|date',
             'tanggal_bayar' => 'required|date',
             'kamar' => 'required|string|max:30|exists:kamar,id',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,svg',
         ]);
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('foto', 'public');
+            $validated['foto'] = $fotoPath;
+        }
 
         // Check if room can accept new occupant
         $kamar = Kamar::find($validated['kamar']);
@@ -61,7 +67,7 @@ class PenghuniController extends Controller
             return back()->withErrors(['kamar' => 'Kamar sudah penuh (maksimal ' . $kamar->max_penghuni . ' penghuni)'])->withInput();
         }
 
-        Penghuni::create($validated);
+        $penghuni = Penghuni::create($validated);
 
         // Tambahkan logika otomatis buat tagihan untuk penghuni baru
         $penghuniBaru = Penghuni::where('id', $validated['id'])->first();
@@ -117,7 +123,15 @@ class PenghuniController extends Controller
             'registrasi' => 'required|date',
             'tanggal_bayar' => 'required|date',
             'kamar' => 'required|string|max:30|exists:kamar,id',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,svg',
         ]);
+        if ($request->hasFile('foto')) {
+            if ($penghuni->foto) {
+                Storage::disk('public')->delete($penghuni->foto);
+            }
+            $fotoPath = $request->file('foto')->store('foto', 'public');
+            $validated['foto'] = $fotoPath;
+        }
 
         // Check if new room can accept occupant (if changed)
         if ($validated['kamar'] !== $penghuni->kamar) {

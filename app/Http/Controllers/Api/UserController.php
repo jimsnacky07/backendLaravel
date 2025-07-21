@@ -8,6 +8,7 @@ use App\Models\Penghuni;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -15,6 +16,10 @@ class UserController extends Controller
     public function index()
     {
         $users = User::with('penghuni')->get();
+        $users = $users->map(function ($user) {
+            $user->foto = $user->foto ? asset('storage/' . $user->foto) : null;
+            return $user;
+        });
         return response()->json($users);
     }
 
@@ -26,12 +31,20 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
             'penghuni_id' => 'nullable|exists:penghuni,id',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,svg',
+            'role' => 'required|string',
         ]);
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('foto_user', 'public');
+            $validated['foto'] = $fotoPath;
+        }
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'foto' => $validated['foto'] ?? null,
+            'role' => $validated['role'],
         ]);
 
         // Relasikan ke penghuni jika ada
@@ -48,6 +61,7 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::with('penghuni')->findOrFail($id);
+        $user->foto = $user->foto ? asset('storage/' . $user->foto) : null;
         return response()->json($user);
     }
 
@@ -60,11 +74,22 @@ class UserController extends Controller
             'email' => ['sometimes', 'required', 'email', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|string|min:6',
             'penghuni_id' => 'nullable|exists:penghuni,id',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,svg',
+            'role' => 'sometimes|required|string',
         ]);
-
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama jika ada
+            if ($user->foto) {
+                Storage::disk('public')->delete($user->foto);
+            }
+            $fotoPath = $request->file('foto')->store('foto_user', 'public');
+            $validated['foto'] = $fotoPath;
+        }
         if (isset($validated['name'])) $user->name = $validated['name'];
         if (isset($validated['email'])) $user->email = $validated['email'];
         if (!empty($validated['password'])) $user->password = Hash::make($validated['password']);
+        if (isset($validated['foto'])) $user->foto = $validated['foto'];
+        if (isset($validated['role'])) $user->role = $validated['role'];
         $user->save();
 
         // Update relasi penghuni

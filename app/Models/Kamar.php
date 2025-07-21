@@ -16,7 +16,8 @@ class Kamar extends Model
         'kapasitas',
         'fasilitas',
         'tarif',
-        'max_penghuni'
+        'max_penghuni',
+        'foto',
     ];
 
     // Relationships

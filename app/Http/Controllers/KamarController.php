@@ -6,6 +6,7 @@ use App\Models\Kamar;
 use App\Models\StatusKamar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class KamarController extends Controller
 {
@@ -48,7 +49,12 @@ class KamarController extends Controller
             'fasilitas' => 'required|string|max:30',
             'tarif' => 'required|numeric',
             'max_penghuni' => 'required|integer|min:1|max:4',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,svg',
         ]);
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('foto', 'public');
+            $validated['foto'] = $fotoPath;
+        }
 
         DB::transaction(function () use ($validated) {
             $kamar = Kamar::create($validated);
@@ -79,7 +85,15 @@ class KamarController extends Controller
             'fasilitas' => 'required|string|max:30',
             'tarif' => 'required|numeric',
             'max_penghuni' => 'required|integer|min:1|max:4',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,svg',
         ]);
+        if ($request->hasFile('foto')) {
+            if ($kamar->foto) {
+                Storage::disk('public')->delete($kamar->foto);
+            }
+            $fotoPath = $request->file('foto')->store('foto', 'public');
+            $validated['foto'] = $fotoPath;
+        }
 
         // Check if reducing max_penghuni would exceed current occupants
         $currentOccupants = $kamar->getCurrentOccupantsCount();
