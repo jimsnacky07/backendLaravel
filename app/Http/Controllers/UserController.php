@@ -30,12 +30,14 @@ class UserController extends Controller
             'password' => 'required|string|min:6',
             'penghuni_id' => 'nullable|exists:penghuni,id',
             'tanggal_bayar' => 'nullable|date',
+            'role' => 'required|string',
         ]);
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'role' => $validated['role'],
         ]);
 
         if (!empty($validated['penghuni_id'])) {
@@ -74,11 +76,13 @@ class UserController extends Controller
             'password' => 'nullable|string|min:6',
             'penghuni_id' => 'nullable|exists:penghuni,id',
             'tanggal_bayar' => 'nullable|date',
+            'role' => 'required|string',
         ]);
 
         if (isset($validated['name'])) $user->name = $validated['name'];
         if (isset($validated['email'])) $user->email = $validated['email'];
         if (!empty($validated['password'])) $user->password = Hash::make($validated['password']);
+        if (isset($validated['role'])) $user->role = $validated['role'];
         $user->save();
 
         // Update relasi penghuni

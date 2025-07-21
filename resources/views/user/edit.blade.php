@@ -31,6 +31,13 @@
             <label for="tanggal_bayar" class="form-label">Tanggal Bayar (Opsional)</label>
             <input type="date" name="tanggal_bayar" class="form-control" value="{{ $user->penghuni ? $user->penghuni->tanggal_bayar : '' }}">
         </div>
+        <div class="mb-3">
+            <label for="role" class="form-label">Role</label>
+            <select name="role" class="form-control">
+                <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
+                <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>User</option>
+            </select>
+        </div>
         <button type="submit" class="btn btn-primary">Update</button>
         <a href="{{ route('user.index') }}" class="btn btn-secondary">Batal</a>
     </form>

@@ -26,6 +26,13 @@
                 @endforeach
             </select>
         </div>
+        <div class="mb-3">
+            <label for="role" class="form-label">Role</label>
+            <select name="role" class="form-control">
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+            </select>
+        </div>
         <button type="submit" class="btn btn-primary">Simpan</button>
         <a href="{{ route('user.index') }}" class="btn btn-secondary">Batal</a>
     </form>
