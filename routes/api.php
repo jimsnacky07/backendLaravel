@@ -24,3 +24,4 @@ Route::apiResource('keuangan', KeuanganController::class);
 Route::apiResource('admin', AdminController::class);
 Route::apiResource('tagihan', TagihanController::class);
 Route::apiResource('user', UserController::class);
+Route::post('login', [UserController::class, 'login']);
