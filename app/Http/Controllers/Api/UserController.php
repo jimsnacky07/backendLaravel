@@ -142,4 +142,41 @@ class UserController extends Controller
             'user' => $user
         ]);
     }
+
+    // Method untuk mengubah password user yang sedang login
+    public function changePassword(Request $request)
+    {
+        try {
+            $request->validate([
+                'old_password' => 'required|string',
+                'new_password' => 'required|string|min:6',
+                'new_password_confirmation' => 'required|same:new_password',
+            ]);
+
+            $user = auth()->user(); // Ambil user yang sedang login
+            
+            // Cek password lama
+            if (!Hash::check($request->old_password, $user->password)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Password lama tidak sesuai'
+                ], 400);
+            }
+
+            // Update password baru
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Password berhasil diubah'
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengubah password: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

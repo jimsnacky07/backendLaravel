@@ -25,14 +25,14 @@ class PenghuniController extends Controller
             } else {
                 $p->kamar = null;
             }
-            $p->keuangan = \Illuminate\Support\Collection::make($p->keuangan)->map(function ($k) {
+            $p->keuangan = collect($p->keuangan)->map(function ($k) {
                 return [
                     'id' => $k->id,
                     'tanggal_bayar' => $k->tgl_bayar,
                     'jumlah_bayar' => $k->bayar,
                 ];
             })->values();
-            $p->tagihan = \Illuminate\Support\Collection::make($p->tagihan)->map(function ($t) {
+            $p->tagihan = collect($p->tagihan)->map(function ($t) {
                 return [
                     'id' => $t->id,
                     'tanggal_tagihan' => $t->tanggal,
@@ -62,14 +62,14 @@ class PenghuniController extends Controller
         } else {
             $penghuni->kamar = null;
         }
-        $penghuni->keuangan = \Illuminate\Support\Collection::make($penghuni->keuangan)->map(function ($k) {
+        $penghuni->keuangan = collect($penghuni->keuangan)->map(function ($k) {
             return [
                 'id' => $k->id,
                 'tanggal_bayar' => $k->tgl_bayar,
                 'jumlah_bayar' => $k->bayar,
             ];
         })->values();
-        $penghuni->tagihan = \Illuminate\Support\Collection::make($penghuni->tagihan)->map(function ($t) {
+        $penghuni->tagihan = collect($penghuni->tagihan)->map(function ($t) {
             return [
                 'id' => $t->id,
                 'tanggal_tagihan' => $t->tanggal,
@@ -96,7 +96,6 @@ class PenghuniController extends Controller
             $data['foto'] = $fotoPath;
         }
 
-        // Check if room can accept new occupant
         $kamar = \App\Models\Kamar::find($data['kamar']);
         if (!$kamar->canAcceptNewOccupant()) {
             return response()->json([
@@ -113,7 +112,6 @@ class PenghuniController extends Controller
             'message' => 'Penghuni berhasil ditambahkan'
         ], 201);
     }
-
 
     public function update(Request $request, $id)
     {
@@ -143,7 +141,6 @@ class PenghuniController extends Controller
             $data['foto'] = $fotoPath;
         }
 
-        // Check if new room can accept occupant (if changed)
         if (isset($data['kamar']) && $data['kamar'] !== $penghuni->kamar) {
             $kamar = \App\Models\Kamar::find($data['kamar']);
             if (!$kamar->canAcceptNewOccupant()) {
@@ -172,7 +169,6 @@ class PenghuniController extends Controller
             ], 404);
         }
 
-        // Check if penghuni has financial records
         if ($penghuni->keuangan()->exists() || $penghuni->tagihan()->exists()) {
             return response()->json([
                 'success' => false,
@@ -186,5 +182,48 @@ class PenghuniController extends Controller
             'success' => true,
             'message' => 'Penghuni berhasil dihapus'
         ]);
+    }
+
+    public function byUserId($user_id)
+    {
+        $penghuni = Penghuni::with(['kamar', 'keuangan', 'tagihan'])
+            ->where('user_id', $user_id)
+            ->first();
+
+        if (!$penghuni) {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+
+        $penghuni->foto = $penghuni->foto ? asset('storage/' . $penghuni->foto) : null;
+
+        if (is_object($penghuni->kamar)) {
+            $penghuni->kamar = [
+                'id' => $penghuni->kamar->id,
+                'status' => $penghuni->kamar->getOccupancyStatus(),
+                'max_penghuni' => $penghuni->kamar->max_penghuni,
+                'current_occupants' => $penghuni->kamar->getCurrentOccupantsCount(),
+                'available_slots' => $penghuni->kamar->getAvailableSlots(),
+            ];
+        } else {
+            $penghuni->kamar = null;
+        }
+
+        $penghuni->keuangan = collect($penghuni->keuangan)->map(function ($k) {
+            return [
+                'id' => $k->id,
+                'tanggal_bayar' => $k->tgl_bayar,
+                'jumlah_bayar' => $k->bayar,
+            ];
+        })->values();
+
+        $penghuni->tagihan = collect($penghuni->tagihan)->map(function ($t) {
+            return [
+                'id' => $t->id,
+                'tanggal_tagihan' => $t->tanggal,
+                'jumlah_tagihan' => $t->tagihan,
+            ];
+        })->values();
+
+        return response()->json(['data' => $penghuni]);
     }
 }

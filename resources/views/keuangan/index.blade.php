@@ -19,6 +19,7 @@
                     <th>Tanggal Bayar</th>
                     <th>Bayar</th>
                     <th>Keterangan</th>
+                    <th>Foto</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -30,6 +31,13 @@
                     <td>{{ $keuangan->tgl_bayar }}</td>
                     <td>{{ $keuangan->bayar }}</td>
                     <td style="max-width:120px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $keuangan->keterangan }}</td>
+                    <td>
+                        @if($keuangan->fotoExists())
+                            <img src="{{ $keuangan->getFotoUrl() }}" alt="Foto" style="width: 100px; height: 100px; object-fit: cover;">
+                        @else
+                            <span class="text-muted">Tidak ada foto</span>
+                        @endif
+                    </td>
                     <td>
                         <a href="{{ route('keuangan.edit', $keuangan->id) }}" class="btn btn-warning btn-sm">Edit</a>
                         <form action="{{ route('keuangan.destroy', $keuangan->id) }}" method="POST" style="display:inline-block">

@@ -14,6 +14,7 @@ return new class extends Migration
             $table->date('tgl_bayar')->nullable();
             $table->double('bayar')->nullable();
             $table->text('keterangan')->nullable();
+            $table->string('foto')->nullable();
         });
     }
 
